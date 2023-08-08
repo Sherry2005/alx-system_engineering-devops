@@ -1,2 +1,31 @@
 #!/bin/bash
-printf "%o\n" $(( $((5#(echo $WATER | tr water 01234))) + $((5#(echo $STIR | tr stir. 01234 ))) )) | tr 01234567 bestchol
+
+WATER="$WATER"
+STIR="$STIR"
+
+# Convert water and stir to base 10
+water_base10=$(echo "$WATER" | tr water 01234 | tr -d '\n')
+stir_base10=$(echo "$STIR" | tr stir. 01234 | tr -d '\n')
+
+# Add the numbers in base 10
+result_base10=$((water_base10 + stir_base10))
+
+# Convert the result to base bestchol
+bestchol_result=""
+while [ "$result_base10" -gt 0 ]; do
+    digit=$((result_base10 % 8))
+    case "$digit" in
+        0) bestchol_result="b$bestchol_result" ;;
+        1) bestchol_result="e$bestchol_result" ;;
+        2) bestchol_result="s$bestchol_result" ;;
+        3) bestchol_result="t$bestchol_result" ;;
+        4) bestchol_result="c$bestchol_result" ;;
+        5) bestchol_result="h$bestchol_result" ;;
+        6) bestchol_result="o$bestchol_result" ;;
+        7) bestchol_result="l$bestchol_result" ;;
+    esac
+    result_base10=$((result_base10 / 8))
+done
+
+echo "$bestchol_result"
+
